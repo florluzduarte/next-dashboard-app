@@ -1,7 +1,10 @@
+"use client";
 import Link from "next/link";
 import { SimplePokemon } from "..";
 import Image from "next/image";
-import { IoHeartOutline } from "react-icons/io5";
+import { IoHeart, IoHeartOutline } from "react-icons/io5";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { toggleFavorite } from "@/store/pokemons/pokemonsSlice";
 
 interface Props {
   pokemon: SimplePokemon;
@@ -9,6 +12,15 @@ interface Props {
 
 export const PokemonsCard = ({ pokemon }: Props) => {
   const { id, name } = pokemon;
+  const dispatch = useAppDispatch();
+
+  const handleToggleFavorite = () => {
+    dispatch(toggleFavorite(pokemon));
+  };
+
+  const isFavorite = useAppSelector(
+    (state) => state.pokemons[id] !== undefined
+  );
 
   return (
     <div className="mx-auto right-0 mt-2 w-60">
@@ -38,21 +50,23 @@ export const PokemonsCard = ({ pokemon }: Props) => {
             </Link>
           </div>
         </div>
-        <div className="border-b">
-          <Link
-            href="/account/campaigns"
+        <div className="border-b cursor-pointer">
+          <div
+            onClick={handleToggleFavorite}
             className="px-4 py-2 hover:bg-gray-100 flex"
           >
             <div className="text-red-600">
-              <IoHeartOutline />
+              {isFavorite ? <IoHeart /> : <IoHeartOutline />}
             </div>
             <div className="pl-3">
               <p className="text-sm font-medium text-gray-800 leading-none">
-                No es favorito
+                {isFavorite ? "Favorito" : "No es favorito"}
               </p>
-              <p className="text-xs text-gray-500">View your campaigns</p>
+              <p className="text-xs text-gray-500">
+                Elige tus pokemons favoritos
+              </p>
             </div>
-          </Link>
+          </div>
         </div>
       </div>
     </div>
